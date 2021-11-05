@@ -1,11 +1,19 @@
 <?php 
 require('vendor/autoload.php');
 
+use Symfony\Component\Dotenv\Dotenv;
 use Nette\Database\Connection;
 
-$transport = new Swift_SmtpTransport('smtp.hostinger.com', 465, 'ssl');
-$transport->setUsername('angel@makechtecnology.online')
-            ->setPassword('3nitrotoluenO');
+$dotenv = new Dotenv(true);
+$dotenv->load(__DIR__ . '/.env');
+
+$transport = new Swift_SmtpTransport(
+                getenv('SMTP_HOST'), 
+                getenv('MAIL_PORT'), 
+                getenv('MAIL_ENCRYPTION')
+        );
+$transport->setUsername(getenv('MAIL_USER_NAME'))
+            ->setPassword(getenv('MAIL_PASSWORD'));
 
 $mailer = new Swift_Mailer($transport);
 
@@ -17,7 +25,11 @@ $message->setFrom('angel@makechtecnology.online')
 
 $response = $mailer->send($message);
 
-$connection = new Connection("mysql:host=localhost;dbname=form_panel", "root", "");
+$connection = new Connection(
+                "mysql:host=". getenv('DB_HOST') .";dbname=" . getenv('DB_NAME'), 
+                getenv('DB_USER'), 
+                getenv('DB_PASSWORD')
+        );
 
 $connection->query('INSERT INTO contact_types', [
         'name' => 'angel'
