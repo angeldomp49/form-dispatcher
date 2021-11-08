@@ -17,11 +17,11 @@
 
     <?php if(session('success')){ ?>
         <script>
-            alert('success');
+            alert("<?php echo(session('message')); ?>");
         </script>
     <?php } else if(session('error')) { ?>
         <script>
-            alert('error');
+            alert("<?php echo(session('message')); ?>");
         </script>
     <?php } ?>
 </body>
