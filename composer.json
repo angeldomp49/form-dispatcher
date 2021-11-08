@@ -1,4 +1,6 @@
 {
+    "name":"makechtec/form-dispatcher",
+    "description": "send mails, store in database and flash session data",
     "require": {
         "nette/database": "^3.1",
         "swiftmailer/swiftmailer": "^6.0",
