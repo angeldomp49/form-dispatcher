@@ -6,7 +6,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Nette\\Database\\": "vendor/nette/database/src"
-        }
+            "Nette\\Database\\": "vendor/nette/database/src",
+            "Facades\\": "facades"
+        },
+        "files": [
+            "session.php"
+        ]
     }
 }
