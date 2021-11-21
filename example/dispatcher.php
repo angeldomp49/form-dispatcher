@@ -11,7 +11,7 @@ Session::saveOlds();
 
 try{
 
-    $responseHTML = Template::render(__DIR__ . '/mail.php', [ 'email' => $_POST['email'] ]);
+    $responseHTML = Template::render('mail.php', [ 'email' => $_POST['email'] ]);
 
     Mail::default("Mensaje de prueba")
         ->setTo($_POST['email'])

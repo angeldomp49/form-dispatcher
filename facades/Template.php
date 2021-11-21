@@ -1,34 +1,36 @@
 <?php
 namespace Facades;
 
-use \Exception;
-
 class Template{
 
-    private $content;
+    private static $isTwigLoaded = false;
+    private static $twigEnvironment = null;
 
-    public static function render( $filePath = "", $templateData = [] ){
-        $template = new self($filePath, $templateData);
-        return $template->getContent();
+    public static function render( $name, $data = [] ){
+        EnvLoader::load();
+
+        $templateDir = __DIR__ . '/..//' . getenv('TEMPLATE_DIR');
+        $cacheDir = __DIR__ . '/..//' . getenv('CACHE_DIR');
+        $twig = self::getTwig( $templateDir, $cacheDir );
+        return $twig->render( $name, $data );
     }
 
-    public function __construct( $filePath = "", $templateData = [] ){
-        $this->checkFile($filePath);
-        extract($templateData);
+    public static function loadTwig( $templateDir, $cacheDir ){
+        $loader = new \Twig\Loader\FilesystemLoader($templateDir);
+        self::$twigEnvironment = new \Twig\Environment($loader, [
+            'cache' => $cacheDir,
+            'auto_reload' => getenv('GLOBAL_DEBUG')
+        ]);
 
-        ob_start();
-        include( $filePath );
-        $this->content = ob_get_contents();
-        ob_end_clean();
+        self::$isTwigLoaded = true;
     }
 
-    public function getContent(){
-        return $this->content;
-    }
-
-    public function checkFile($filePath){
-        if(!file_exists($filePath)){
-            throw new Exception("Error getting file template: " . $filePath);
+    public static function getTwig( $templateDir, $cacheDir ){
+        if(!self::$isTwigLoaded){
+          self::loadTwig( $templateDir, $cacheDir );  
         }
+
+        return self::$twigEnvironment;
     }
+
 }
