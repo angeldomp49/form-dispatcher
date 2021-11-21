@@ -37,13 +37,13 @@ para recuperar errores u otros mensajes, además de la función __dold()__ que s
 recuperar los campos del formulario y evitar que vuelvan vacios. Esta función llama a __echo()__ por lo que si se quiere solo el valor debe llamar a __old()__.
 
 ### Despachador ###
-
     <?php 
 
     use Facades\Mail;
     use Facades\Database;
     use Facades\Session;
     use Facades\Template;
+    use Facades\ReCaptcha;
 
     require_once(__DIR__ .'/../vendor/autoload.php');
 
@@ -51,7 +51,14 @@ recuperar los campos del formulario y evitar que vuelvan vacios. Esta función l
 
     try{
 
-        $responseHTML = Template::render(__DIR__ . '/mail.php', [ 'email' => $_POST['email'] ]);
+        $recaptcha = ReCaptcha::default()
+                        ->error(function(){
+                            throw new \Exception("Error ReCaptcha", 1);
+                        })
+                        ->check($_POST['input_recaptcha'], $_SERVER['REMOTE_ADDR']);
+
+
+        $responseHTML = Template::render('mail.php', [ 'email' => $_POST['email'] ]);
 
         Mail::default("Mensaje de prueba")
             ->setTo($_POST['email'])
@@ -84,3 +91,7 @@ el contenido del archivo pasándole las variables mediante un array relacional c
 Para __Database__ se usa la siguiente libreria [Nette Database](https://doc.nette.org/en/3.1/database).
 
 Para la fachada de __Session__ documentación pendiente.
+
+Para __Template__ utiliza el motor de Symfony __Twig__ por lo que puedes ver su documentación [AQUI](https://twig.symfony.com/).
+
+Para ReCaptcha utiliza casi los mismo métodos que la libreria de [Google ReCaptcha](https://packagist.org/packages/google/recaptcha) pero con unas modificaciones para que se pueda encadenar también la callback para error y éxito.
