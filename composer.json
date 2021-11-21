@@ -7,7 +7,8 @@
         "nette/database": "^3.1",
         "swiftmailer/swiftmailer": "^6.0",
         "symfony/dotenv": "^5.3",
-        "twig/twig": "^3.3"
+        "twig/twig": "^3.3",
+        "google/recaptcha": "^1.2"
     },
     "autoload": {
         "psr-4": {
