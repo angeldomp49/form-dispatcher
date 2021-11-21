@@ -3,14 +3,19 @@
 use Facades\Mail;
 use Facades\Database;
 use Facades\Session;
+use Facades\Template;
 
 require_once(__DIR__ .'/../vendor/autoload.php');
 
 Session::saveOlds();
 
 try{
+
+    $responseHTML = Template::render(__DIR__ . '/mail.php', [ 'email' => $_POST['email'] ]);
+
     Mail::default("Mensaje de prueba")
         ->setTo($_POST['email'])
+        ->setBody($responseHTML, 'text/html')
         ->send();
 
     Database::default()
